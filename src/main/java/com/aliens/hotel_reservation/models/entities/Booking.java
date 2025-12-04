@@ -1,6 +1,6 @@
-package com.aliens.hotel_reservation.entities;
+package com.aliens.hotel_reservation.models.entities;
 
-import com.aliens.hotel_reservation.enums.RoomStatus;
+import com.aliens.hotel_reservation.models.enums.RoomStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
