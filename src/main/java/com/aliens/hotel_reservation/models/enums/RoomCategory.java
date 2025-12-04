@@ -1,4 +1,4 @@
-package com.aliens.hotel_reservation.enums;
+package com.aliens.hotel_reservation.models.enums;
 
 public enum RoomCategory {
     STANDARD,

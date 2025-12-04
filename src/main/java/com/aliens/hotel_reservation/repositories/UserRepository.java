@@ -1,6 +1,6 @@
 package com.aliens.hotel_reservation.repositories;
 
-import com.aliens.hotel_reservation.entities.User;
+import com.aliens.hotel_reservation.models.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

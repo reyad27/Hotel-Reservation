@@ -1,4 +1,4 @@
-package com.aliens.hotel_reservation.entities;
+package com.aliens.hotel_reservation.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
