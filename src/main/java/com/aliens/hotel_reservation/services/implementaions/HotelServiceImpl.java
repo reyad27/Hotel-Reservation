@@ -1,16 +1,16 @@
-package com.aliens.hotel_reservation.services.implementation;
+package com.aliens.hotel_reservation.services.implementaions;
 
 import com.aliens.hotel_reservation.exceptions.HotelBusinessException;
 import com.aliens.hotel_reservation.mappers.RoomTypesMapper;
 import com.aliens.hotel_reservation.mappers.HotelMapper;
+import com.aliens.hotel_reservation.models.dtos.BookingDto;
 import com.aliens.hotel_reservation.models.dtos.HotelRequestDto;
 import com.aliens.hotel_reservation.models.dtos.HotelSearchResponseDto;
 import com.aliens.hotel_reservation.models.dtos.RoomTypeDto;
-import com.aliens.hotel_reservation.models.entities.Hotel;
-import com.aliens.hotel_reservation.models.entities.RoomType;
-import com.aliens.hotel_reservation.models.entities.SeasonalPrice;
+import com.aliens.hotel_reservation.models.entities.*;
+import com.aliens.hotel_reservation.models.enums.RoomStatus;
 import com.aliens.hotel_reservation.repositories.*;
-import com.aliens.hotel_reservation.services.HotelService;
+import com.aliens.hotel_reservation.services.interfaces.HotelService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,7 +43,7 @@ public class HotelServiceImpl implements HotelService {
 
 
     @Override
-    public Page<HotelSearchResponseDto> searchHotel(String city, LocalDate from, LocalDate to, int guest, Pageable pageable) {
+    public Page<HotelSearchResponseDto> searchHotel(String city, LocalDate from, LocalDate to, short guests, Pageable pageable) {
         if (from.isAfter(to)) {
             throw new HotelBusinessException("Check-in date cannot be after check-out date");
         }
@@ -58,23 +58,19 @@ public class HotelServiceImpl implements HotelService {
 
         for (Hotel hotel : hotels) {
 
-            List<RoomType> roomTypes = roomTypeRepository.findByHotelIdAndCapacity(hotel.getId(), guest);
+            List<RoomType> roomTypes = roomTypeRepository.findByHotelIdAndCapacity(hotel.getId(), guests);
 
             if (roomTypes.isEmpty()) {
-                throw new HotelBusinessException("No room types available for " + guest + " guests in hotel: " + hotel.getName());
+                throw new HotelBusinessException("No room types available for " + guests + " guests in hotel: " + hotel.getName());
             }
 
             List<RoomTypeDto> roomTypeDtos = new ArrayList<>();
 
             for (RoomType roomType : roomTypes) {
 
-                int activeRoom = roomRepository.countActiveRooms(roomType.getId());
-                int conflictRoom = bookingRepository.countConflictingBookings(roomType.getId(), from, to);
-                int availableRooms = activeRoom - conflictRoom;
+                if(findAvailableRoom(roomType.getId(),from,to).isEmpty()) continue;
 
-                if (availableRooms <= 0) continue;
-
-                double totalPrice = calculateTotalPrice(roomType, from, to);
+                double totalPrice = getTotalPriceAndApplySeasonalPriceIfExist(roomType, from, to);
                 RoomTypeDto dto = mapper.mapRoomTypeWithPrice(roomType, totalPrice);
                 roomTypeDtos.add(dto);
             }
@@ -100,8 +96,8 @@ public class HotelServiceImpl implements HotelService {
 
     @Override
     public HotelRequestDto insertHotel(HotelRequestDto hotelDto) {
-        Hotel hotel=hotelMapper.hotelRequestDtoToHotel(hotelDto);
-        Hotel savedHotel=hotelRepository.save(hotel);
+        Hotel hotel = hotelMapper.hotelRequestDtoToHotel(hotelDto);
+        Hotel savedHotel = hotelRepository.save(hotel);
         return hotelMapper.hotelToHotelRequestDto(savedHotel);
     }
 
@@ -114,38 +110,43 @@ public class HotelServiceImpl implements HotelService {
         hotelRepository.deleteById(id);
     }
 
-    public double calculateTotalPrice(RoomType roomType,LocalDate from,LocalDate to){
-        long numberOfDays = ChronoUnit.DAYS.between(from, to);
-        if (numberOfDays <= 0) return 0;
+    private double getTotalPriceAndApplySeasonalPriceIfExist(RoomType roomType, LocalDate startDate, LocalDate endDate) {
 
-        double totalPrice = 0;
+        long diffInDays = ChronoUnit.DAYS.between(startDate, endDate);
+        double totalPice = diffInDays * roomType.getBasePrice();
 
-        for (int i = 0; i < numberOfDays; i++) {
-            LocalDate currentDate = from.plusDays(i);
-            double multiplier = getSeasonalMultiplier(roomType.getId(), currentDate);
-            totalPrice += roomType.getBasePrice() * multiplier;
+        SeasonalPrice seasonalPrice = seasonalPriceRepository.findById(roomType.getSeasonalPrice().getId()).orElse(null);
+
+        if (seasonalPrice != null)
+            if (!startDate.isBefore(seasonalPrice.getFromDate()) && !endDate.isAfter(seasonalPrice.getToDate()))
+                totalPice *= seasonalPrice.getMultiplier();
+
+        return totalPice;
+    }
+
+
+    private Optional<Room> findAvailableRoom(Long roomTypeId, LocalDate startDate, LocalDate endDate){
+
+        List<Room> rooms = roomRepository.findAllByRoomTypeIdAndStatus(roomTypeId, RoomStatus.ACTIVE);
+        List<Booking> bookings = bookingRepository.findAllByRoomTypeIdAndEndDateGreaterThanEqual(roomTypeId,LocalDate.now());
+
+        for(Room room: rooms){
+
+            boolean available = true;
+            List<Booking> bookingsFilteredBasedOnRoomId = bookings.stream()
+                    .filter(booking -> booking.getRoom().getId() == room.getId()).toList();
+
+            for(Booking booking: bookingsFilteredBasedOnRoomId)
+                if (booking.getStartDate().isBefore(endDate) && startDate.isBefore(booking.getEndDate())) {
+                    available = false;
+                    break;
+                }
+
+            if(available)
+                return Optional.of(room);
         }
 
-        return totalPrice;
-
-    }
-    //return seasonal price  multiplier
-    public double getSeasonalMultiplier(Long roomTypeId,LocalDate date){
-
-        List<SeasonalPrice> seasonalPrices =
-                seasonalPriceRepository
-                        .findByRoomTypeIdAndFromDateLessThanEqualAndEndDateGreaterThanEqual(
-                                roomTypeId, date,  date
-                        );
-        return seasonalPrices.stream()
-                .mapToDouble(SeasonalPrice::getMultiplier)//mapping the multiplier [1.5,1.2,1.3]
-                .max()//take the highest multiplier from the multiplier
-                .orElse(1.0);
-
-
-
-
-
+        return Optional.empty();
     }
 
 

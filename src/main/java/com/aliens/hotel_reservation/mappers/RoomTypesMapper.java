@@ -12,7 +12,7 @@ public interface RoomTypesMapper {
     default RoomTypeDto mapRoomTypeWithPrice(RoomType roomType, double totalPrice) {
         return new RoomTypeDto(
                 roomType.getId(),
-                roomType.getCategory(),
+                roomType.getName(),
                 roomType.getCapacity(),
                 totalPrice
         );

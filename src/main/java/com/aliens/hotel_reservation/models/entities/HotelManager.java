@@ -18,7 +18,7 @@ public class HotelManager {
     @JoinColumn(name = "user_id" , referencedColumnName = "id")
     private User user;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "hotel_id", referencedColumnName = "id")
     private Hotel hotel;
 }

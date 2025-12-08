@@ -1,5 +1,6 @@
 package com.aliens.hotel_reservation.models.entities;
 
+import com.aliens.hotel_reservation.models.enums.RoomStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,5 +21,6 @@ public class Room {
 
     private String roomNumber;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private RoomStatus status;
 }

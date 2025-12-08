@@ -23,6 +23,7 @@ public class RoomType {
     @JoinColumn(name = "season_id", referencedColumnName = "id")
     private SeasonalPrice seasonalPrice;
 
+    @Enumerated(EnumType.STRING)
     private RoomCategory name;
 
     private double basePrice;
