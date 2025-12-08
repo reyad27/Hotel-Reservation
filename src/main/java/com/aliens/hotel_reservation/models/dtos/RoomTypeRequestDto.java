@@ -7,11 +7,8 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record RoomTypeRequestDto(
-        @NotNull
-        RoomCategory category,
-        @NotNull(message = "Room status is required")
-        RoomStatus name,
-
+        @NotNull(message = "name of room type is required")
+        RoomCategory name,
         @NotNull
         @Positive(message = "price must be greater than 0")
         Double basePrice,
