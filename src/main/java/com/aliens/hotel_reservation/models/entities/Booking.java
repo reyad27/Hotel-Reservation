@@ -1,16 +1,16 @@
 package com.aliens.hotel_reservation.models.entities;
 
-import com.aliens.hotel_reservation.models.enums.RoomStatus;
+import com.aliens.hotel_reservation.models.enums.BookingStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "bookings")
+@Table(name = "bookings", uniqueConstraints = {@UniqueConstraint(columnNames = {"room_id", "start_date", "end_date"})})
 public class Booking {
 
     @Id
@@ -33,14 +33,14 @@ public class Booking {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     private Room room;
 
-    private Date startDate;
+    private LocalDate startDate;
 
-    private Date endDate;
+    private LocalDate endDate;
 
     private double totalPrice;
 
     @Enumerated(EnumType.STRING)
-    private RoomStatus status;
+    private BookingStatus status;
 
     private String fakePaymentTransactionId;
 }

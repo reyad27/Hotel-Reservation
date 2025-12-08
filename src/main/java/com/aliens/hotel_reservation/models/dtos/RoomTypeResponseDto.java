@@ -6,8 +6,7 @@ import com.aliens.hotel_reservation.models.enums.RoomStatus;
 
 public record RoomTypeResponseDto(
           Long id,
-          RoomCategory category,
-          RoomStatus name,
+          RoomCategory name,
           Double basePrice,
           Short capacity,
           Short totalRooms,
