@@ -43,6 +43,4 @@ public class Booking {
     private RoomStatus status;
 
     private String fakePaymentTransactionId;
-
-
 }

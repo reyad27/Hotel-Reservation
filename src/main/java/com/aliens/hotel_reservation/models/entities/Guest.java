@@ -17,8 +17,6 @@ public class Guest {
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
-
     private String name;
-
     private String phone;
 }

@@ -37,5 +37,4 @@ public class RoomTypeController {
     public List<SeasonalPriceResponseDto> getAllSeasonalPrices() {
         return roomTypeService.getAllSeasonalPrices();
     }
-
 }

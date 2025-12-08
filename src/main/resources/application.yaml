@@ -6,9 +6,8 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/postgres?currentSchema=hotel_reservation
     username: postgres
-    password: 12345678
+    password: Ahmad1234
     driver-class-name: org.postgresql.Driver
-
   jpa:
     #this will create table if it doesn't exist and update if exist
     #and will replace it with validate soon, read about it and make sure what the difference
