@@ -8,8 +8,8 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
 
-    @Mapping(source = "booking.hotel.name",target = "hotelName")
-    @Mapping(source = "booking.roomType.name", target = "roomType")
-    @Mapping(source = "booking.room.roomNumber", target = "roomNumber")
+    @Mapping(source = "hotel.name",target = "hotelName")
+    @Mapping(source = "roomType.name", target = "roomType")
+    @Mapping(source = "room.roomNumber", target = "roomNumber")
     ResponseBookingDto fromBookingToResponse(Booking booking);
 }

@@ -5,6 +5,8 @@ import com.aliens.hotel_reservation.models.dtos.HotelManagerCreationDto;
 import com.aliens.hotel_reservation.models.dtos.HotelManagerDto;
 import com.aliens.hotel_reservation.services.implementaions.HotelManagerServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,20 +17,23 @@ public class ManagerController {
     private final HotelManagerServiceImpl hotelManagerService;
 
     @GetMapping("/{id}")
-    public HotelManagerDto getManagerById(@PathVariable long id) throws HotelBusinessException {
-        return hotelManagerService.getManagerById(id);
+    public ResponseEntity<HotelManagerDto> getManagerById(@PathVariable long id) throws HotelBusinessException {
+        HotelManagerDto hotelManagerDto = hotelManagerService.getManagerById(id);
+        return new ResponseEntity<>(hotelManagerDto, HttpStatus.OK);
     }
 
 
     @PostMapping
-    public HotelManagerDto addNewManager(@RequestBody HotelManagerCreationDto dto) {
-        return hotelManagerService.addNewManager(dto);
+    public ResponseEntity<HotelManagerDto> addNewManager(@RequestBody HotelManagerCreationDto dto) {
+        HotelManagerDto hotelManagerDto = hotelManagerService.addNewManager(dto);
+        return new ResponseEntity<>(hotelManagerDto, HttpStatus.CREATED);
     }
 
 
     @DeleteMapping("/{id}")
-    public void deleteManager(@PathVariable long id) {
+    public ResponseEntity<?> deleteManager(@PathVariable long id) {
         hotelManagerService.deleteManagerById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
 

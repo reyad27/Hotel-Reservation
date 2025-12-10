@@ -6,7 +6,7 @@ public record HotelSearchResponseDto (
          Long hotelId,
          String name,
          String city,
-         List<RoomTypeDto> roomTypes
+         List<RoomTypeResponseDto> roomTypes
 
 ){
 }

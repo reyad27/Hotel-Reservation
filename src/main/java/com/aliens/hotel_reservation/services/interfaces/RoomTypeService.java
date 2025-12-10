@@ -8,10 +8,11 @@ import com.aliens.hotel_reservation.models.dtos.SeasonalPriceResponseDto;
 import java.util.List;
 
 public interface RoomTypeService {
+
     RoomTypeResponseDto create(RoomTypeRequestDto  dto);
 
-    SeasonalPriceResponseDto addSeasonalPrice(Long roomTypeId,SeasonalPriceRequestDto dto);
-    RoomTypeResponseDto assignSeason(Long roomTypeId, Long seasonId);
+    SeasonalPriceResponseDto addSeasonalPrice(SeasonalPriceRequestDto dto);
+
     List<SeasonalPriceResponseDto> getAllSeasonalPrices();
 
 }

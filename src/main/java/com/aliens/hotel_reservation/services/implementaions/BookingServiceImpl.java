@@ -121,9 +121,10 @@ public class BookingServiceImpl implements BookingService {
         long diffInDays = ChronoUnit.DAYS.between(bookingDto.startDate(), bookingDto.endDate());
         double totalPice = diffInDays * roomType.getBasePrice();
 
-        SeasonalPrice seasonalPrice = seasonalPriceRepository.findById(roomType.getSeasonalPrice().getId()).orElse(null);
+        List<SeasonalPrice> seasonalPrices = seasonalPriceRepository
+                .findAllByRoomTypeIdAndToDateGreaterThanEqual(roomType.getId(),LocalDate.now());
 
-        if (seasonalPrice != null)
+        for(SeasonalPrice seasonalPrice: seasonalPrices)
             if (!bookingDto.startDate().isBefore(seasonalPrice.getFromDate()) && !bookingDto.endDate().isAfter(seasonalPrice.getToDate()))
                 totalPice *= seasonalPrice.getMultiplier();
 

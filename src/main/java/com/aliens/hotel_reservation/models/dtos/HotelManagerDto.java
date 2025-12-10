@@ -1,8 +1,12 @@
 package com.aliens.hotel_reservation.models.dtos;
 
-import com.aliens.hotel_reservation.models.entities.Hotel;
-import com.aliens.hotel_reservation.models.entities.User;
+import jakarta.validation.constraints.NotNull;
 
-public record HotelManagerDto(long id , User user , Hotel hotel) {
-
+public record HotelManagerDto(
+        long id ,
+        @NotNull(message = "UserId is required")
+        String userId ,
+        @NotNull(message = "HotelId is required")
+        String hotelId
+) {
 }

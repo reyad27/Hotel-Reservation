@@ -1,17 +1,20 @@
 package com.aliens.hotel_reservation.models.dtos;
 
-import com.aliens.hotel_reservation.models.entities.SeasonalPrice;
 import com.aliens.hotel_reservation.models.enums.RoomCategory;
-import com.aliens.hotel_reservation.models.enums.RoomStatus;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 
-public record RoomTypeResponseDto(
-          Long id,
-          RoomCategory name,
-          Double basePrice,
-          Short capacity,
-          Short totalRooms,
-          Long hotelId,
-          String hotelName,
-          Long seasonId
-) {
+@Getter
+@Setter
+@AllArgsConstructor
+public class RoomTypeResponseDto{
+          private Long id;
+          private RoomCategory name;
+          private Double basePrice;
+          private Short capacity;
+          private Short totalRooms;
+          private Long hotelId;
+          double priceAfterApplySeasonalPrice;
+
 }

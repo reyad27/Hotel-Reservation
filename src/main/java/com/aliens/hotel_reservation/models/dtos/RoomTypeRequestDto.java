@@ -1,7 +1,6 @@
 package com.aliens.hotel_reservation.models.dtos;
 
 import com.aliens.hotel_reservation.models.enums.RoomCategory;
-import com.aliens.hotel_reservation.models.enums.RoomStatus;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;

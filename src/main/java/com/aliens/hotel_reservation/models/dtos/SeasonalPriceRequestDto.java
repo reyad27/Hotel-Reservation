@@ -6,14 +6,18 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 public record SeasonalPriceRequestDto (
-        @NotNull(message = "startDate is required")
-        LocalDate startDate,
 
-        @NotNull(message = "endDate is required")
-        LocalDate endDate,
+        @NotNull
+        Long roomTypeId,
 
-        @NotNull(message = "price is required")
-        @Positive(message = "price must be > 0")
-        Double price
+        @NotNull(message = "fromDate is required")
+        LocalDate fromDate,
+
+        @NotNull(message = "toDate is required")
+        LocalDate toDate,
+
+        @NotNull(message = "multiplier is required")
+        @Positive(message = "multiplier must be > 0")
+        Double multiplier
 ){
 }

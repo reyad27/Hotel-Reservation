@@ -8,12 +8,12 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface RoomTypeMapper {
-    @Mapping(source = "hotel.id",   target = "hotelId")
-    @Mapping(source = "hotel.name", target = "hotelName")
+
+    @Mapping(source = "hotel.id", target = "hotelId")
+    @Mapping(target = "priceAfterApplySeasonalPrice", ignore = true)
     RoomTypeResponseDto toResponseDto(RoomType roomType);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "hotel", ignore = true)
-    @Mapping(target = "seasonalPrice", ignore = true)
-    RoomType toEntity(RoomTypeRequestDto dto);
+    RoomType toRoomTypeEntity(RoomTypeRequestDto dto);
 }

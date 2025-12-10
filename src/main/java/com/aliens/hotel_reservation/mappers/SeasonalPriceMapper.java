@@ -8,14 +8,10 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface SeasonalPriceMapper {
-    @Mapping(source = "startDate", target = "fromDate")
-    @Mapping(source = "endDate", target = "toDate")
-    @Mapping(source = "price", target = "multiplier")
-    SeasonalPrice toEntity(SeasonalPriceRequestDto dto);
 
-    // Entity -> ResponseDto
-    @Mapping(source = "fromDate",   target = "startDate")
-    @Mapping(source = "toDate",     target = "endDate")
-    @Mapping(source = "multiplier", target = "price")
-    SeasonalPriceResponseDto toDto(SeasonalPrice entity);
+    @Mapping(target = "roomType", ignore = true)
+    SeasonalPrice toSeasonalPriceEntity(SeasonalPriceRequestDto dto);
+
+    @Mapping(target = "roomTypeId", source = "roomType.id")
+    SeasonalPriceResponseDto toResponseDto(SeasonalPrice seasonalPrice);
 }

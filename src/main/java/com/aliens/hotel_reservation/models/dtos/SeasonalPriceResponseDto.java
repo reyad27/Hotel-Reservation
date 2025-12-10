@@ -4,8 +4,8 @@ import java.time.LocalDate;
 
 public record SeasonalPriceResponseDto(
         Long id,
-        LocalDate startDate,
-        LocalDate endDate,
-        Double price
+        LocalDate fromDate,
+        LocalDate toDate,
+        Double multiplier
 ) {
 }
