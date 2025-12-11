@@ -5,8 +5,6 @@ import com.aliens.hotel_reservation.models.dtos.HotelSearchResponseDto;
 import com.aliens.hotel_reservation.models.entities.Hotel;
 import org.mapstruct.Mapper;
 
-import java.util.List;
-
 @Mapper(componentModel="spring")
 public interface HotelMapper {
 
@@ -14,7 +12,6 @@ public interface HotelMapper {
 
 
     Hotel hotelRequestDtoToHotel(HotelRequestDto dto);
-
 
     HotelSearchResponseDto hotelToHotelSearchResponseDto(Hotel hotel);
 

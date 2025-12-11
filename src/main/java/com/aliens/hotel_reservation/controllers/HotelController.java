@@ -13,6 +13,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,39 +23,34 @@ import java.time.LocalDate;
 @RequestMapping("/api/hotels")
 public class HotelController {
 
-
     private final  HotelService hotelService;
-
 
     @GetMapping("/search")
     public ResponseEntity<Page<HotelSearchResponseDto>> searchHotels(
             @RequestParam @NotBlank String city,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to,
             @RequestParam @Min(1) short guests,
             @PageableDefault(size = 10) Pageable pageable
     ) {
-
         Page<HotelSearchResponseDto> hotels = hotelService.searchHotel(city, from, to, guests, pageable);
         return ResponseEntity.ok(hotels);
     }
-    @PostMapping
-    public ResponseEntity<HotelRequestDto > insertHotel(@Valid @RequestBody HotelRequestDto hotelDto){
 
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<HotelRequestDto > insertHotel(@Valid @RequestBody HotelRequestDto hotelDto){
         HotelRequestDto hotelRequestDto=hotelService.insertHotel(hotelDto);
         return ResponseEntity.
                 status(HttpStatus.CREATED)
                 .body(hotelRequestDto);
-
-
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteHotelById(@PathVariable Long id){
-
         hotelService.deleteHotelById(id);
         return ResponseEntity.ok("Hotel with id "+id+" deleted successfully");
-
     }
 
 }

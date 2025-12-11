@@ -78,8 +78,10 @@ public class RomeTypeServiceImp implements RoomTypeService {
 
 
     @Override
-    public List<SeasonalPriceResponseDto> getAllSeasonalPrices() {
-        return seasonalPriceRepository.findAll()
+    public List<SeasonalPriceResponseDto> getAllSeasonalPrices(Long roomTypeId) {
+        roomTypeRepository.findById(roomTypeId)
+                .orElseThrow(()->new HotelBusinessException(String.format("RoomTypeId %s not found", roomTypeId)));
+        return seasonalPriceRepository.findAllByRoomTypeId(roomTypeId)
                 .stream()
                 .map(seasonalPriceMapper::toResponseDto)
                 .toList();

@@ -1,8 +1,11 @@
 package com.aliens.hotel_reservation.models.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,13 +17,16 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany
-    private RoomType roomType;
+    @OneToMany(mappedBy = "hotel")
+    private List<RoomType> roomTypes;
 
+    @NotBlank
     private String name;
 
+    @NotBlank
     private String city;
 
+    @NotBlank
     private String address;
 
 }

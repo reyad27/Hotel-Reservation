@@ -55,16 +55,16 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public Page<ResponseBookingDto> getAllBookingsByGuestId(Long guestId, Pageable pageable) {
         guestRepository.findById(guestId)
-                .orElseThrow(()->new HotelBusinessException("Your provided guestId is not known for me"));
+                .orElseThrow(() -> new HotelBusinessException("Your provided guestId is not known for me"));
 
-        return bookingRepository.findAllByGuestId(guestId,pageable)
+        return bookingRepository.findAllByGuestId(guestId, pageable)
                 .map(bookingMapper::fromBookingToResponse);
     }
 
     @Override
     public Page<ResponseBookingDto> getAllBookingsByHotelId(Long hotelId, Pageable pageable) {
         hotelRepository.findById(hotelId)
-                .orElseThrow(()->new HotelBusinessException("Your provided hotelId is not known for me"));
+                .orElseThrow(() -> new HotelBusinessException("Your provided hotelId is not known for me"));
 
         return bookingRepository.findAllByHotelId(hotelId, pageable)
                 .map(bookingMapper::fromBookingToResponse);
@@ -73,9 +73,9 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public ResponseBookingDto cancelBookingByGuest(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(()->new HotelBusinessException("your provided bookingId is not known for me"));
+                .orElseThrow(() -> new HotelBusinessException("your provided bookingId is not known for me"));
 
-        if(LocalDate.now().isBefore(booking.getStartDate()))
+        if (LocalDate.now().isBefore(booking.getStartDate()))
             booking.setStatus(BookingStatus.CANCELLED);
         else
             throw new HotelBusinessException("Cancellation not allowed after check-in");
@@ -88,7 +88,7 @@ public class BookingServiceImpl implements BookingService {
     @Override
     public ResponseBookingDto cancelBookingByManager(Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(()->new HotelBusinessException("your provided bookingId is not known for me"));
+                .orElseThrow(() -> new HotelBusinessException("your provided bookingId is not known for me"));
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
         return bookingMapper.fromBookingToResponse(booking);
@@ -122,9 +122,9 @@ public class BookingServiceImpl implements BookingService {
         double totalPice = diffInDays * roomType.getBasePrice();
 
         List<SeasonalPrice> seasonalPrices = seasonalPriceRepository
-                .findAllByRoomTypeIdAndToDateGreaterThanEqual(roomType.getId(),LocalDate.now());
+                .findAllByRoomTypeIdAndToDateGreaterThanEqual(roomType.getId(), LocalDate.now());
 
-        for(SeasonalPrice seasonalPrice: seasonalPrices)
+        for (SeasonalPrice seasonalPrice : seasonalPrices)
             if (!bookingDto.startDate().isBefore(seasonalPrice.getFromDate()) && !bookingDto.endDate().isAfter(seasonalPrice.getToDate()))
                 totalPice *= seasonalPrice.getMultiplier();
 
@@ -136,24 +136,26 @@ public class BookingServiceImpl implements BookingService {
             throw new HotelBusinessException("The number of guests in over than capacity, capacity is: " + roomType.getCapacity());
     }
 
-    private Optional<Room> findAvailableRoom(Long roomTypeId, LocalDate startDate, LocalDate endDate){
+    private Optional<Room> findAvailableRoom(Long roomTypeId, LocalDate startDate, LocalDate endDate) {
 
         List<Room> rooms = roomRepository.findAllByRoomTypeIdAndStatus(roomTypeId, RoomStatus.ACTIVE);
-        List<Booking> bookings = bookingRepository.findAllByRoomTypeIdAndEndDateGreaterThanEqual(roomTypeId,LocalDate.now());
+        List<Booking> bookings = bookingRepository.findAllByRoomTypeIdAndEndDateGreaterThanEqual(roomTypeId, LocalDate.now());
 
-        for(Room room: rooms){
+        for (Room room : rooms) {
 
             boolean available = true;
             List<Booking> bookingsFilteredBasedOnRoomId = bookings.stream()
                     .filter(booking -> booking.getRoom().getId() == room.getId()).toList();
 
-            for(Booking booking: bookingsFilteredBasedOnRoomId)
-                if (booking.getStartDate().isBefore(endDate) && !startDate.isAfter(booking.getEndDate())) {
+            for (Booking booking : bookingsFilteredBasedOnRoomId)
+                if (booking.getStartDate().isBefore(endDate)
+                        && !startDate.isAfter(booking.getEndDate())
+                        && !booking.getStatus().equals(BookingStatus.CANCELLED)) {
                     available = false;
                     break;
                 }
 
-            if(available)
+            if (available)
                 return Optional.of(room);
         }
 

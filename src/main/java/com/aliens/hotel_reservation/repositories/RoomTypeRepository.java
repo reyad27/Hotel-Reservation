@@ -1,13 +1,10 @@
 package com.aliens.hotel_reservation.repositories;
 
 import com.aliens.hotel_reservation.models.entities.RoomType;
-import com.aliens.hotel_reservation.models.entities.SeasonalPrice;
-import jakarta.validation.constraints.Min;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface RoomTypeRepository extends JpaRepository<RoomType,Long> {
 
@@ -16,4 +13,6 @@ public interface RoomTypeRepository extends JpaRepository<RoomType,Long> {
 
 
     List<RoomType> findByHotelIdAndCapacity(long id, short guests);
+
+    List<RoomType> findByHotelIdAndCapacityIsGreaterThanEqual(long id, short guests);
 }

@@ -16,3 +16,7 @@ spring:
       ddl-auto: update
     #this will show you what the query that fired
     show-sql: true
+
+jwt:
+  secret: S/YcQy8pQ+z2Wb/g5q3kP/0n4x8fD9d0j5t1u2v3w4y5z6a7b8c=
+  expiration: 86400000 # 86400000 ms = 24 hours

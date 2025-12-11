@@ -13,6 +13,6 @@ public interface RoomTypeService {
 
     SeasonalPriceResponseDto addSeasonalPrice(SeasonalPriceRequestDto dto);
 
-    List<SeasonalPriceResponseDto> getAllSeasonalPrices();
+    List<SeasonalPriceResponseDto> getAllSeasonalPrices(Long roomTypeId);
 
 }

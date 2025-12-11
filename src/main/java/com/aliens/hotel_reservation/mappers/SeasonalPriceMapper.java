@@ -12,6 +12,6 @@ public interface SeasonalPriceMapper {
     @Mapping(target = "roomType", ignore = true)
     SeasonalPrice toSeasonalPriceEntity(SeasonalPriceRequestDto dto);
 
-    @Mapping(target = "roomTypeId", source = "roomType.id")
+//    @Mapping(target = "roomTypeId", source = "roomType.id")
     SeasonalPriceResponseDto toResponseDto(SeasonalPrice seasonalPrice);
 }

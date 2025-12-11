@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "room_types")
+@Table(name = "room_types", uniqueConstraints = {@UniqueConstraint(columnNames = {"hotel_id", "name"})})
 public class RoomType {
 
     @Id
@@ -16,7 +16,7 @@ public class RoomType {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "hotel_id", referencedColumnName = "id")
+    @JoinColumn(name = "hotel_id", referencedColumnName = "id", nullable = false)
     private Hotel hotel;
 
     @Enumerated(EnumType.STRING)

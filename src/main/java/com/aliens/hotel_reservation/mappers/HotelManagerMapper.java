@@ -8,8 +8,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel="spring")
 public interface HotelManagerMapper {
-    @Mapping(source = "id", target = "id")
-    @Mapping(source = "user", target = "user")
-    @Mapping(source = "hotel", target = "hotel")
+    @Mapping(source = "hotel.id", target = "hotelId")
+    @Mapping(source = "user.id", target = "userId")
     HotelManagerDto hotelManagerToHotelManagerDto(HotelManager hotelManager);
 }

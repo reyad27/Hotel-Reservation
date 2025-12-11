@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @Slf4j
@@ -21,30 +22,35 @@ public class BookingController {
     private final BookingService bookingService;
 
     @PostMapping
+    @PreAuthorize("hasRole('GUEST')")
     public ResponseEntity<ResponseBookingDto> createBooking(@Valid @RequestBody BookingDto bookingDto) {
         ResponseBookingDto responseBookingDto = bookingService.createBooking(bookingDto);
         return new ResponseEntity<>(responseBookingDto, HttpStatus.CREATED);
     }
 
     @GetMapping("/guest/{guestId}")
+    @PreAuthorize("hasRole('GUEST')")
     public ResponseEntity<Page<ResponseBookingDto>> getAllBookingsByGuestId(@PathVariable Long guestId, Pageable pageable) {
         Page<ResponseBookingDto> responseBookingsDto = bookingService.getAllBookingsByGuestId(guestId, pageable);
         return new ResponseEntity<>(responseBookingsDto, HttpStatus.OK);
     }
 
     @GetMapping("/manager/{hotelId}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Page<ResponseBookingDto>> getAllBookingsByHotelId(@PathVariable Long hotelId, Pageable pageable){
         Page<ResponseBookingDto> responseBookingsDto = bookingService.getAllBookingsByHotelId(hotelId, pageable);
         return new ResponseEntity<>(responseBookingsDto, HttpStatus.OK);
     }
 
     @PatchMapping("/guest/{bookingId}")
+    @PreAuthorize("hasRole('GUEST')")
     public ResponseEntity<ResponseBookingDto> cancelBookingByGuest(@PathVariable Long bookingId){
         ResponseBookingDto responseBookingDto = bookingService.cancelBookingByGuest(bookingId);
         return new ResponseEntity<>(responseBookingDto,HttpStatus.OK);//204??
     }
 
     @PatchMapping("/manager/{bookingId}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<ResponseBookingDto> cancelBookingByManager(@PathVariable Long bookingId){
         ResponseBookingDto responseBookingDto = bookingService.cancelBookingByManager(bookingId);
         return new ResponseEntity<>(responseBookingDto,HttpStatus.OK);

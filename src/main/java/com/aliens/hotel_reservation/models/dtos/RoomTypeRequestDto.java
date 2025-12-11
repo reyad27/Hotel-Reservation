@@ -8,15 +8,17 @@ import jakarta.validation.constraints.Positive;
 public record RoomTypeRequestDto(
         @NotNull(message = "name of room type is required")
         RoomCategory name,
+
         @NotNull
         @Positive(message = "price must be greater than 0")
         Double basePrice,
+
         @NotNull
         @Min(value = 1 , message = "Capacity must be at least 1")
         Short capacity,
-        @NotNull(message = "Total rooms is required")
-        @Min(value = 1, message = "Total rooms must be at least 1")
+        @Min(0)
         Short totalRooms,
+
         @NotNull(message = "Hotel id is required")
         Long hotelId
 ) {
