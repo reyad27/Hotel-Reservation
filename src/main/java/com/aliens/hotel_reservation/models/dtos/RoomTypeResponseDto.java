@@ -1,7 +1,6 @@
 package com.aliens.hotel_reservation.models.dtos;
 
 import com.aliens.hotel_reservation.models.enums.RoomCategory;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
